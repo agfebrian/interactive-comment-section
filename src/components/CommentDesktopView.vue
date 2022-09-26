@@ -1,5 +1,27 @@
 <script setup lang="ts">
-//
+import { defineProps } from "vue";
+
+const props = defineProps({
+  item: {
+    type: Object,
+    required: false,
+    default: {
+      id: 1,
+      content:
+        "Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.",
+      createdAt: "1 month ago",
+      score: 12,
+      user: {
+        image: {
+          png: "./images/avatars/image-amyrobson.png",
+          webp: "./images/avatars/image-amyrobson.webp",
+        },
+        username: "amyrobson",
+      },
+      replies: [],
+    },
+  },
+});
 </script>
 
 <template>
@@ -7,24 +29,19 @@
     <div class="aside">
       <div class="counter">
         <div class="plus">+</div>
-        <div class="count">12</div>
+        <div class="count">{{ item.score }}</div>
         <div class="min">-</div>
       </div>
     </div>
     <div class="header">
-      <img
-        src="https://karaktereling.org/wp-content/uploads/2019/03/users-vector-icon-png_260862.jpg"
-        alt="user"
-      />
-      <p class="title">arnyrobson</p>
-      <p class="date">1 month ago</p>
+      <img :src="item.user.image.png" alt="user" />
+      <p class="title">{{ item.user.username }}</p>
+      <p class="date">{{ item.createdAt }}</p>
       <button>Reply</button>
     </div>
     <div class="content">
       <p>
-        Impressive! Thought it seems the drag feature be imporved. But overall
-        it looks incredible. You've nailed the design and responsiveness at
-        various breakpoints works really well.
+        {{ item.content }}
       </p>
     </div>
   </div>

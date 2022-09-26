@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
+import dataJson from "./services/data.json";
 import AppCommentDesktopView from "./components/CommentDesktopView.vue";
+
+const data = ref([]);
+
+onMounted(() => {
+  data.value = dataJson as any;
+});
 </script>
 
 <template>
   <main class="container">
-    <AppCommentDesktopView />
+    <template v-for="(item, index) in dataJson.comments" :key="index">
+      <AppCommentDesktopView :item="item" />
+    </template>
   </main>
 </template>
 
