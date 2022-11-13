@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import dataJson from "./services/data.json";
+
+import AppUserComment from "./components/UserComment.vue";
 import AppCommentDesktopView from "./components/CommentDesktopView.vue";
 
 const data = ref([]);
@@ -15,6 +17,12 @@ onMounted(() => {
     <template v-for="(item, index) in dataJson.comments" :key="index">
       <AppCommentDesktopView :item="item" />
     </template>
+
+    <AppUserComment
+      :item="dataJson.currentUser"
+      placeholder="Add a comment"
+      buttonName="SEND"
+    />
   </main>
 </template>
 
