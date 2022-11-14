@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed } from "vue";
 import dataJson from "./services/data.json";
+import { useUserStore } from "./stores/user";
+import { useCommentStore } from "./stores/comment";
 
 import AppUserComment from "./components/UserComment.vue";
 import AppCommentDesktopView from "./components/CommentDesktopView.vue";
 
-const data = ref<any>(dataJson);
+const userStore = useUserStore();
+const commentStore = useCommentStore();
 
-watch(data.value.comments, (newVal) => newVal);
+const data = computed(() => commentStore.commentsList);
+const user = computed(() => userStore.getCurrentUser);
+const { comments, currentUser } = dataJson;
+
+commentStore.setComments(comments);
+userStore.setCurrentUser(currentUser);
 </script>
 
 <template>
   <main class="container">
-    <div v-for="(item, index) in data.comments" :key="index">
+    <div v-for="(item, index) in data" :key="index">
       <AppCommentDesktopView :item="item" />
       <div class="replies" v-if="item.replies.length">
         <div v-for="reply in item.replies">
@@ -22,7 +30,7 @@ watch(data.value.comments, (newVal) => newVal);
     </div>
 
     <AppUserComment
-      :item="dataJson.currentUser"
+      :item="user"
       placeholder="Add a comment"
       buttonName="SEND"
     />
