@@ -14,9 +14,14 @@ onMounted(() => {
 
 <template>
   <main class="container">
-    <template v-for="(item, index) in dataJson.comments" :key="index">
+    <div v-for="(item, index) in dataJson.comments" :key="index">
       <AppCommentDesktopView :item="item" />
-    </template>
+      <div class="replies" v-if="item.replies.length">
+        <div v-for="reply in item.replies">
+          <AppCommentDesktopView :item="reply" />
+        </div>
+      </div>
+    </div>
 
     <AppUserComment
       :item="dataJson.currentUser"
@@ -28,6 +33,15 @@ onMounted(() => {
 
 <style scoped>
 @import "style.css";
+
+.replies {
+  padding: 0 0 0 30px;
+  margin: 15px 0 0 38px;
+  border-left: 2px solid hsl(211, 10%, 45%, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
 .container {
   width: 100%;
