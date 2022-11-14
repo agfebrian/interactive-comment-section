@@ -12,13 +12,17 @@ const props = defineProps({
     type: String,
     require: false,
   },
+  bgcolor: {
+    type: String,
+    require: false,
+  },
 });
 </script>
 
 <template>
   <button
     @click="emit('submit')"
-    :style="{ color: color }"
+    :style="{ color: color, backgroundColor: bgcolor }"
     :class="[`${text ? 'text' : ''}`, 'btn']"
   >
     <slot />
