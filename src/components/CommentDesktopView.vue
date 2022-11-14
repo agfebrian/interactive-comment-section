@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
+import dataJson from "../services/data.json";
+
+import AppButton from "./Button.vue";
 
 const props = defineProps({
   item: {
@@ -22,6 +25,8 @@ const props = defineProps({
     },
   },
 });
+
+const currentUser = ref<{ username: string }>(dataJson.currentUser);
 </script>
 
 <template>
@@ -37,7 +42,28 @@ const props = defineProps({
       <img :src="item.user.image.png" alt="user" />
       <p class="title">{{ item.user.username }}</p>
       <p class="date">{{ item.createdAt }}</p>
-      <button>Reply</button>
+
+      <AppButton :text="true" v-if="item.user.username != currentUser.username">
+        <font-awesome-icon icon="fa-solid fa-reply" style="margin-right: 3px" />
+        Reply
+      </AppButton>
+      <div v-else style="margin-left: auto">
+        <AppButton
+          :text="true"
+          color="hsl(358, 75%, 66%)"
+          style="margin-right: 15px"
+        >
+          <font-awesome-icon
+            icon="fa-solid fa-trash"
+            style="margin-right: 3px"
+          />
+          Delete
+        </AppButton>
+        <AppButton :text="true">
+          <font-awesome-icon icon="fa-solid fa-pen" style="margin-right: 3px" />
+          Edit
+        </AppButton>
+      </div>
     </div>
     <div class="content">
       <p>
