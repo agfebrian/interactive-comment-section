@@ -1,7 +1,21 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { defineProps } from "vue";
+
+const props = defineProps({
+  text: {
+    type: Boolean,
+    require: false,
+    default: false,
+  },
+  color: {
+    type: String,
+    require: false,
+  },
+});
+</script>
 
 <template>
-  <button class="btn">
+  <button :style="{ color: color }" :class="[`${text ? 'text' : ''}`, 'btn']">
     <slot />
   </button>
 </template>
@@ -13,5 +27,17 @@
   border-radius: 5px;
   color: white;
   padding: 10px 20px;
+  cursor: pointer;
+}
+
+.text {
+  padding: 0;
+  font-weight: 500;
+  color: var(--color-primary-blue);
+  background-color: transparent;
+}
+
+.btn:hover {
+  opacity: 0.5;
 }
 </style>
