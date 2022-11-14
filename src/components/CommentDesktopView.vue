@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { defineProps, ref } from "vue";
-import dataJson from "../services/data.json";
+import { defineProps, computed, ref } from "vue";
+import { useUserStore } from "../stores/user";
+import { useCommentStore } from "../stores/comment";
 
+import AppModal from "./Modal.vue";
 import AppButton from "./Button.vue";
 import AppUserComment from "./UserComment.vue";
 
@@ -25,9 +27,23 @@ const props = defineProps({
       replies: [],
     },
   },
+  author: {
+    type: String,
+    require: true,
+  },
 });
 
-const currentUser = ref<{ username: string }>(dataJson.currentUser);
+const userStore = useUserStore();
+const commentStore = useCommentStore();
+
+const currentUser = computed(() => userStore.getCurrentUser);
+const comments = computed(() => commentStore.commentsList);
+
+const modalConfirm = ref<boolean>(false);
+const selectedReply = ref<{ author: string; idReply: number }>({
+  author: "",
+  idReply: 0,
+});
 
 const replyTo = (id: number) => {
   const _target = document.querySelector(`[data-id="${id}"]`) as HTMLElement;
@@ -35,10 +51,33 @@ const replyTo = (id: number) => {
     ".form__comment > textarea"
   ) as HTMLInputElement;
 
-  const { user } = dataJson.comments.find((c) => c.id == id) || {};
+  const { user } = comments.value.find((c) => c.id == id) || {};
   textarea.value = `@${user?.username} `;
   _target.style.display = "flex";
   textarea.focus();
+};
+
+const editReply = (author: string, idReply: number) => {
+  //
+};
+
+const showModalConfirm = (author: string, idReply: number) => {
+  selectedReply.value = { author: author, idReply: idReply };
+  modalConfirm.value = true;
+};
+
+const closeModalConfirm = () => {
+  modalConfirm.value = false;
+};
+
+const applyModalConfirm = () => {
+  const { author, idReply } = selectedReply.value;
+  deleteReply(author, idReply);
+  modalConfirm.value = false;
+};
+
+const deleteReply = (author: string, idReply: number) => {
+  commentStore.removeReply(author, idReply);
 };
 </script>
 
@@ -69,6 +108,7 @@ const replyTo = (id: number) => {
           :text="true"
           color="hsl(358, 75%, 66%)"
           style="margin-right: 15px"
+          @submit="showModalConfirm(author!, item.id)"
         >
           <font-awesome-icon
             icon="fa-solid fa-trash"
@@ -76,7 +116,10 @@ const replyTo = (id: number) => {
           />
           Delete
         </AppButton>
-        <AppButton :text="true">
+        <AppButton
+          :text="true"
+          @submit="editReply(item.user.username, item.id)"
+        >
           <font-awesome-icon icon="fa-solid fa-pen" style="margin-right: 3px" />
           Edit
         </AppButton>
@@ -98,6 +141,12 @@ const replyTo = (id: number) => {
     :item="item.currentUser"
     placeholder="Add a comment"
     button-name="REPLY"
+  />
+
+  <AppModal
+    :show-modal="modalConfirm"
+    @close="closeModalConfirm"
+    @apply="applyModalConfirm"
   />
 </template>
 

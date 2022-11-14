@@ -24,7 +24,7 @@ userStore.setCurrentUser(currentUser);
       <AppCommentDesktopView :item="item" />
       <div class="replies" v-if="item.replies.length">
         <div v-for="reply in item.replies">
-          <AppCommentDesktopView :item="reply" />
+          <AppCommentDesktopView :item="reply" :author="item.user.username" />
         </div>
       </div>
     </div>

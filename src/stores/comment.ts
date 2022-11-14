@@ -16,5 +16,11 @@ export const useCommentStore = defineStore("comment", () => {
     comment?.replies.push(val);
   };
 
-  return { comments, commentsList, setComments, pushReply };
+  const removeReply = (author: string, idReply: number) => {
+    const comment = comments.value.find((item) => item.user.username == author);
+    const replyIndex = comment?.replies.findIndex((item) => item.id == idReply);
+    comment?.replies.splice(replyIndex!, 1);
+  };
+
+  return { comments, commentsList, setComments, pushReply, removeReply };
 });
