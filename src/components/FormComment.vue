@@ -13,8 +13,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref } from "vue";
-import dataJson from "../services/data.json";
+import { defineEmits, defineProps, ref, computed } from "vue";
+import { useUserStore } from "../stores/user";
+import { useCommentStore } from "../stores/comment";
 
 import ButtonApp from "./Button.vue";
 
@@ -32,24 +33,25 @@ const props = defineProps({
   },
 });
 
+const userState = useUserStore();
+const commentState = useCommentStore();
+
 const textarea = ref<HTMLInputElement | null>(null);
+
+const user = computed(() => userState.getCurrentUser);
 
 const handleSubmit = () => {
   const message = textarea.value?.value;
   if (message?.includes("@")) {
-    const user = dataJson.currentUser;
+    const currentUser = user.value;
     const replyingTo = message.split(" ")[0].slice(1);
-    const commentUserToReply = dataJson.comments.find(
-      (item) => item.user.username == replyingTo
-    );
-
-    commentUserToReply?.replies.push({
+    commentState.pushReply(replyingTo, {
       id: new Date().getTime(),
       content: message.split(" ").slice(1).join(" "),
       createdAt: "1 week ago",
-      score: 4,
+      score: 0,
       replyingTo: replyingTo,
-      user: user,
+      user: currentUser,
     });
   }
   emit("submit");

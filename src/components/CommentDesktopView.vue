@@ -40,8 +40,6 @@ const replyTo = (id: number) => {
   _target.style.display = "flex";
   textarea.focus();
 };
-
-const handleSubmit = () => {};
 </script>
 
 <template>
