@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref, watch } from "vue";
 import dataJson from "./services/data.json";
 
 import AppUserComment from "./components/UserComment.vue";
 import AppCommentDesktopView from "./components/CommentDesktopView.vue";
 
-const data = ref([]);
+const data = ref<any>(dataJson);
 
-onMounted(() => {
-  data.value = dataJson as any;
-});
+watch(data.value.comments, (newVal) => newVal);
 </script>
 
 <template>
   <main class="container">
-    <div v-for="(item, index) in dataJson.comments" :key="index">
+    <div v-for="(item, index) in data.comments" :key="index">
       <AppCommentDesktopView :item="item" />
       <div class="replies" v-if="item.replies.length">
         <div v-for="reply in item.replies">

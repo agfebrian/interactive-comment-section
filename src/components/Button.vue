@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 
+const emit = defineEmits(["submit"]);
 const props = defineProps({
   text: {
     type: Boolean,
@@ -15,7 +16,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <button :style="{ color: color }" :class="[`${text ? 'text' : ''}`, 'btn']">
+  <button
+    @click="emit('submit')"
+    :style="{ color: color }"
+    :class="[`${text ? 'text' : ''}`, 'btn']"
+  >
     <slot />
   </button>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
 
 import AppFormComment from "./FormComment.vue";
 
@@ -23,12 +23,22 @@ const props = defineProps({
     default: "BUTTON",
   },
 });
+
+const comment = ref<HTMLElement | null>(null);
+
+const handleSubmit = () => {
+  comment.value!.style.display = "none";
+};
 </script>
 
 <template>
-  <div class="comment">
+  <div ref="comment" class="comment">
     <img :src="user.image?.png" :alt="user.name" />
-    <AppFormComment :placeholder="placeholder" :buttonName="buttonName" />
+    <AppFormComment
+      :placeholder="placeholder"
+      :buttonName="buttonName"
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 

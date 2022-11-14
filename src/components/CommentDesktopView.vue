@@ -3,6 +3,7 @@ import { defineProps, ref } from "vue";
 import dataJson from "../services/data.json";
 
 import AppButton from "./Button.vue";
+import AppUserComment from "./UserComment.vue";
 
 const props = defineProps({
   item: {
@@ -27,6 +28,20 @@ const props = defineProps({
 });
 
 const currentUser = ref<{ username: string }>(dataJson.currentUser);
+
+const replyTo = (id: number) => {
+  const _target = document.querySelector(`[data-id="${id}"]`) as HTMLElement;
+  const textarea = _target.querySelector(
+    ".form__comment > textarea"
+  ) as HTMLInputElement;
+
+  const { user } = dataJson.comments.find((c) => c.id == id) || {};
+  textarea.value = `@${user?.username} `;
+  _target.style.display = "flex";
+  textarea.focus();
+};
+
+const handleSubmit = () => {};
 </script>
 
 <template>
@@ -43,7 +58,11 @@ const currentUser = ref<{ username: string }>(dataJson.currentUser);
       <p class="title">{{ item.user.username }}</p>
       <p class="date">{{ item.createdAt }}</p>
 
-      <AppButton :text="true" v-if="item.user.username != currentUser.username">
+      <AppButton
+        :text="true"
+        @submit="replyTo(item.id)"
+        v-if="item.user.username != currentUser.username"
+      >
         <font-awesome-icon icon="fa-solid fa-reply" style="margin-right: 3px" />
         Reply
       </AppButton>
@@ -67,10 +86,21 @@ const currentUser = ref<{ username: string }>(dataJson.currentUser);
     </div>
     <div class="content">
       <p>
+        <span class="replying__to" v-if="item.replyingTo"
+          >@{{ item.replyingTo }}</span
+        >
         {{ item.content }}
       </p>
     </div>
   </div>
+
+  <AppUserComment
+    :data-id="item.id"
+    style="display: none; margin-top: 5px"
+    :item="item.currentUser"
+    placeholder="Add a comment"
+    button-name="REPLY"
+  />
 </template>
 
 <style scoped>
@@ -122,6 +152,10 @@ const currentUser = ref<{ username: string }>(dataJson.currentUser);
   grid-column-end: 13;
   grid-row-start: 2;
   grid-row-end: 4;
+}
+
+.replying__to {
+  color: var(--color-primary-blue);
 }
 
 .counter {
