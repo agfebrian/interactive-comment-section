@@ -51,8 +51,18 @@ const replyTo = (id: number) => {
     ".form__comment > textarea"
   ) as HTMLInputElement;
 
+  let mentionTo: string = "";
   const { user } = comments.value.find((c) => c.id == id) || {};
-  textarea.value = `@${user?.username} `;
+
+  if (user) {
+    mentionTo = user?.username;
+  } else {
+    const comment = comments.value.find((c) => c.user.username == props.author);
+    mentionTo = comment?.replies.find((r) => r.id == id)!.user.username!;
+  }
+
+  commentStore.setReplyingTo(props.author!);
+  textarea.value = `@${mentionTo} `;
   _target.style.display = "flex";
   textarea.focus();
 };

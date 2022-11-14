@@ -39,18 +39,19 @@ const commentState = useCommentStore();
 const textarea = ref<HTMLInputElement | null>(null);
 
 const user = computed(() => userState.getCurrentUser);
+const replyingTo = computed(() => commentState.getReplyingTo);
 
 const handleSubmit = () => {
   const message = textarea.value?.value;
   if (message?.includes("@")) {
     const currentUser = user.value;
-    const replyingTo = message.split(" ")[0].slice(1);
-    commentState.pushReply(replyingTo, {
+    const mentionTo = message.split(" ")[0].slice(1);
+    commentState.pushReply(replyingTo.value, {
       id: new Date().getTime(),
       content: message.split(" ").slice(1).join(" "),
-      createdAt: "1 week ago",
+      createdAt: "1 second ago",
       score: 0,
-      replyingTo: replyingTo,
+      replyingTo: mentionTo,
       user: currentUser,
     });
   }

@@ -4,8 +4,10 @@ import { Comment, Reply } from "../types/Comment.interface";
 
 export const useCommentStore = defineStore("comment", () => {
   const comments = ref<Comment[]>([]);
+  const replyingTo = ref<string>("");
 
   const commentsList = computed(() => comments.value);
+  const getReplyingTo = computed(() => replyingTo.value);
 
   const setComments = (val: Comment[]) => {
     comments.value = val;
@@ -22,5 +24,17 @@ export const useCommentStore = defineStore("comment", () => {
     comment?.replies.splice(replyIndex!, 1);
   };
 
-  return { comments, commentsList, setComments, pushReply, removeReply };
+  const setReplyingTo = (val: string) => {
+    replyingTo.value = val;
+  };
+
+  return {
+    comments,
+    commentsList,
+    getReplyingTo,
+    setComments,
+    pushReply,
+    removeReply,
+    setReplyingTo,
+  };
 });
