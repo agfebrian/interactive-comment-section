@@ -67,7 +67,7 @@ const props = defineProps({
 }
 
 .box {
-  width: 40%;
+  width: 30%;
   min-height: 30%;
   z-index: 2;
   gap: 15px;
