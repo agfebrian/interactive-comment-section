@@ -38,6 +38,34 @@ export const useCommentStore = defineStore("comment", () => {
     replyingTo.value = val;
   };
 
+  const incrementScore = (idReply: number) => {
+    const comment = comments.value.filter((item) => item.id == idReply);
+    if (comment.length) {
+      comment.map((item) => item.score++);
+    } else {
+      comments.value.forEach((item) => {
+        const reply = item.replies.filter((item) => item.id == idReply);
+        reply.map((item) => item.score++);
+      });
+    }
+  };
+
+  const decrementScore = (idReply: number) => {
+    const comment = comments.value.filter((item) => item.id == idReply);
+    if (comment.length) {
+      comment.map((item) => {
+        item.score ? item.score-- : 0;
+      });
+    } else {
+      comments.value.forEach((item) => {
+        const reply = item.replies.filter((item) => item.id == idReply);
+        reply.map((item) => {
+          item.score ? item.score-- : 0;
+        });
+      });
+    }
+  };
+
   return {
     comments,
     commentsList,
@@ -47,5 +75,7 @@ export const useCommentStore = defineStore("comment", () => {
     updateReply,
     removeReply,
     setReplyingTo,
+    incrementScore,
+    decrementScore,
   };
 });

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { defineProps, computed, ref, nextTick } from "vue";
+import { defineProps, computed, ref } from "vue";
 import { useUserStore } from "../stores/user";
 import { useCommentStore } from "../stores/comment";
 
 import AppModal from "./Modal.vue";
 import AppButton from "./Button.vue";
+import AppCounter from "./Counter.vue";
 import AppUserComment from "./UserComment.vue";
 import AppFormComment from "./FormComment.vue";
 
@@ -143,11 +144,7 @@ const deleteReply = (author: string, idReply: number) => {
 <template>
   <div class="grid">
     <div class="aside">
-      <div class="counter">
-        <div class="plus">+</div>
-        <div class="count">{{ item.score }}</div>
-        <div class="min">-</div>
-      </div>
+      <AppCounter :count="item.score" :id-reply="item.id" />
     </div>
     <div class="header">
       <img :src="item.user.image.png" alt="user" />
@@ -269,27 +266,6 @@ const deleteReply = (author: string, idReply: number) => {
 
 .replying__to {
   color: var(--color-primary-blue);
-}
-
-.counter {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  border-radius: 10px;
-  background-color: var(--color-neutral-very-light-gray);
-}
-
-.count {
-  margin: 5px 0;
-  color: var(--color-neutral-dark-blue);
-}
-
-.plus,
-.min {
-  padding: 5px 0;
-  font-size: 0.8em;
-  color: var(--color-neutral-grayish-blue);
 }
 
 .show {
