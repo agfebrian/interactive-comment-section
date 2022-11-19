@@ -40,6 +40,7 @@ const commentStore = useCommentStore();
 
 const currentUser = computed(() => userStore.getCurrentUser);
 const comments = computed(() => commentStore.commentsList);
+const replyingTo = computed(() => commentStore.getReplyingTo);
 
 const modalConfirm = ref<boolean>(false);
 const selectedReply = ref<{ author: string; idReply: number }>({
@@ -49,10 +50,13 @@ const selectedReply = ref<{ author: string; idReply: number }>({
 const valueToUpdateContent = ref<string>("");
 
 const replyTo = (id: number) => {
-  const _target = document.querySelector(`[data-id="${id}"]`) as HTMLElement;
+  const _target = document.querySelector(
+    `.comment[data-id="${id}"]`
+  ) as HTMLElement;
   const textarea = _target.querySelector(
     ".form__comment > textarea"
   ) as HTMLInputElement;
+  selectedReply.value.idReply = id;
 
   let mentionTo: string = "";
   const { user } = comments.value.find((c) => c.id == id) || {};
@@ -68,6 +72,31 @@ const replyTo = (id: number) => {
   textarea.value = `@${mentionTo} `;
   _target.style.display = "flex";
   textarea.focus();
+};
+
+const sendReply = () => {
+  const _target = document.querySelector(
+    `.comment[data-id="${selectedReply.value.idReply}"]`
+  ) as HTMLElement;
+  const textarea = _target.querySelector(
+    ".form__comment > textarea"
+  ) as HTMLInputElement;
+  const message = textarea.value;
+
+  if (message.includes("@")) {
+    const user = currentUser.value;
+    const mentionTo = message.split(" ")[0].slice(1);
+    commentStore.pushReply(replyingTo.value, {
+      id: new Date().getTime(),
+      content: message.split(" ").slice(1).join(" "),
+      createdAt: "1 second ago",
+      score: 0,
+      replyingTo: mentionTo,
+      user: user,
+    });
+  }
+
+  _target.style.display = "none";
 };
 
 const editReply = async (idReply: number, content: string) => {
@@ -88,7 +117,7 @@ const editReply = async (idReply: number, content: string) => {
     }
   });
 
-  valueToUpdateContent.value = content;
+  valueToUpdateContent.value = content.replace("@undefined ", "");
   _targetComment!.classList.add("show");
   (_targetComment!.firstElementChild as HTMLInputElement).focus();
   _targetContent!.style.display = "none";
@@ -203,6 +232,7 @@ const deleteReply = (author: string, idReply: number) => {
     style="display: none; margin-top: 5px"
     :item="item.currentUser"
     placeholder="Add a comment"
+    @handle-submit="sendReply"
     button-name="REPLY"
   />
 

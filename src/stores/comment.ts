@@ -13,6 +13,10 @@ export const useCommentStore = defineStore("comment", () => {
     comments.value = val;
   };
 
+  const pushComment = (val: Comment) => {
+    comments.value.push(val);
+  };
+
   const pushReply = (name: string, val: Reply) => {
     const comment = comments.value.find((item) => item.user.username == name);
     comment?.replies.push(val);
@@ -23,15 +27,26 @@ export const useCommentStore = defineStore("comment", () => {
       (item) => item.user.username == author
     );
     const reply = comment[0].replies.filter((item) => item.id == idReply);
-    reply.forEach((item) => {
-      item.content = content;
-    });
+
+    if (reply.length) {
+      reply.forEach((item) => {
+        item.content = content;
+      });
+    } else {
+      comment.map((item) => (item.content = content));
+    }
   };
 
   const removeReply = (author: string, idReply: number) => {
     const comment = comments.value.find((item) => item.user.username == author);
     const replyIndex = comment?.replies.findIndex((item) => item.id == idReply);
-    comment?.replies.splice(replyIndex!, 1);
+
+    if (replyIndex != -1) {
+      comment?.replies.splice(replyIndex!, 1);
+    } else {
+      const index = comments.value.findIndex((item) => item.id == idReply);
+      comments.value.splice(index, 1);
+    }
   };
 
   const setReplyingTo = (val: string) => {
@@ -71,6 +86,7 @@ export const useCommentStore = defineStore("comment", () => {
     commentsList,
     getReplyingTo,
     setComments,
+    pushComment,
     pushReply,
     updateReply,
     removeReply,

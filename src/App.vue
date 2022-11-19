@@ -16,11 +16,28 @@ const { comments, currentUser } = dataJson;
 
 commentStore.setComments(comments);
 userStore.setCurrentUser(currentUser);
+
+const addComment = () => {
+  const el = document.querySelector(
+    "#user__comment > .form__comment > textarea"
+  ) as HTMLInputElement;
+
+  commentStore.pushComment({
+    id: new Date().getTime(),
+    content: el.value,
+    createdAt: "1 second ago",
+    score: 0,
+    user: currentUser,
+    replies: [],
+  });
+
+  el.value = "";
+};
 </script>
 
 <template>
   <main class="container">
-    <div v-for="(item, index) in data" :key="index">
+    <div v-for="(item, index) in data" :key="index" style="width: 100%">
       <AppCommentDesktopView :item="item" :author="item.user.username" />
       <div class="replies" v-if="item.replies.length">
         <div v-for="reply in item.replies">
@@ -31,7 +48,9 @@ userStore.setCurrentUser(currentUser);
 
     <AppUserComment
       :item="user"
+      id="user__comment"
       placeholder="Add a comment"
+      @handle-submit="addComment"
       buttonName="SEND"
     />
   </main>

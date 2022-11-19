@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { defineProps, ref } from "vue";
+import { defineEmits, defineProps, ref } from "vue";
 
 import AppFormComment from "./FormComment.vue";
 
+const emit = defineEmits(["handle-submit"]);
 const props = defineProps({
   user: {
     type: Object,
@@ -27,7 +28,7 @@ const props = defineProps({
 const comment = ref<HTMLElement | null>(null);
 
 const handleSubmit = () => {
-  comment.value!.style.display = "none";
+  emit("handle-submit");
 };
 </script>
 

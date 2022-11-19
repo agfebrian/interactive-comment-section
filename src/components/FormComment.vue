@@ -13,9 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref, computed, watch } from "vue";
-import { useUserStore } from "../stores/user";
-import { useCommentStore } from "../stores/comment";
+import { defineEmits, defineProps, ref, watch } from "vue";
 
 import ButtonApp from "./Button.vue";
 
@@ -37,13 +35,7 @@ const props = defineProps({
   },
 });
 
-const userState = useUserStore();
-const commentState = useCommentStore();
-
 const textarea = ref<HTMLInputElement | null>(null);
-
-const user = computed(() => userState.getCurrentUser);
-const replyingTo = computed(() => commentState.getReplyingTo);
 
 watch(
   () => props.value,
@@ -53,19 +45,6 @@ watch(
 );
 
 const handleSubmit = () => {
-  const message = textarea.value?.value;
-  if (message?.includes("@")) {
-    const currentUser = user.value;
-    const mentionTo = message.split(" ")[0].slice(1);
-    commentState.pushReply(replyingTo.value, {
-      id: new Date().getTime(),
-      content: message.split(" ").slice(1).join(" "),
-      createdAt: "1 second ago",
-      score: 0,
-      replyingTo: mentionTo,
-      user: currentUser,
-    });
-  }
   emit("submit");
 };
 </script>
