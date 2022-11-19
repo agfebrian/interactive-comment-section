@@ -18,6 +18,16 @@ export const useCommentStore = defineStore("comment", () => {
     comment?.replies.push(val);
   };
 
+  const updateReply = (author: string, idReply: number, content: string) => {
+    const comment = comments.value.filter(
+      (item) => item.user.username == author
+    );
+    const reply = comment[0].replies.filter((item) => item.id == idReply);
+    reply.forEach((item) => {
+      item.content = content;
+    });
+  };
+
   const removeReply = (author: string, idReply: number) => {
     const comment = comments.value.find((item) => item.user.username == author);
     const replyIndex = comment?.replies.findIndex((item) => item.id == idReply);
@@ -34,6 +44,7 @@ export const useCommentStore = defineStore("comment", () => {
     getReplyingTo,
     setComments,
     pushReply,
+    updateReply,
     removeReply,
     setReplyingTo,
   };

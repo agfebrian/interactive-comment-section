@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref, computed } from "vue";
+import { defineEmits, defineProps, ref, computed, watch } from "vue";
 import { useUserStore } from "../stores/user";
 import { useCommentStore } from "../stores/comment";
 
@@ -25,6 +25,10 @@ const props = defineProps({
     type: String,
     require: false,
     default: "",
+  },
+  value: {
+    type: String,
+    require: false,
   },
   buttonName: {
     type: String,
@@ -40,6 +44,13 @@ const textarea = ref<HTMLInputElement | null>(null);
 
 const user = computed(() => userState.getCurrentUser);
 const replyingTo = computed(() => commentState.getReplyingTo);
+
+watch(
+  () => props.value,
+  (newVal) => {
+    textarea.value!.value = newVal!;
+  }
+);
 
 const handleSubmit = () => {
   const message = textarea.value?.value;

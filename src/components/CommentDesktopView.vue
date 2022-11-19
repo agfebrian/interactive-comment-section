@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { defineProps, computed, ref } from "vue";
+import { defineProps, computed, ref, nextTick } from "vue";
 import { useUserStore } from "../stores/user";
 import { useCommentStore } from "../stores/comment";
 
 import AppModal from "./Modal.vue";
 import AppButton from "./Button.vue";
 import AppUserComment from "./UserComment.vue";
+import AppFormComment from "./FormComment.vue";
 
 const props = defineProps({
   item: {
@@ -44,6 +45,7 @@ const selectedReply = ref<{ author: string; idReply: number }>({
   author: "",
   idReply: 0,
 });
+const valueToUpdateContent = ref<string>("");
 
 const replyTo = (id: number) => {
   const _target = document.querySelector(`[data-id="${id}"]`) as HTMLElement;
@@ -67,8 +69,55 @@ const replyTo = (id: number) => {
   textarea.focus();
 };
 
-const editReply = (author: string, idReply: number) => {
-  //
+const editReply = async (idReply: number, content: string) => {
+  const elContens = document.querySelectorAll(".content__text");
+  const elComments = document.querySelectorAll(".form__comment");
+  let _targetContent: HTMLElement;
+  let _targetComment: HTMLElement;
+
+  elContens.forEach((el) => {
+    if (parseInt((el as HTMLElement).dataset.id!) == idReply) {
+      _targetContent = el as HTMLElement;
+    }
+  });
+
+  elComments.forEach((el) => {
+    if (parseInt((el as HTMLElement).dataset.id!) == idReply) {
+      _targetComment = el as HTMLElement;
+    }
+  });
+
+  valueToUpdateContent.value = content;
+  _targetComment!.classList.add("show");
+  (_targetComment!.firstElementChild as HTMLInputElement).focus();
+  _targetContent!.style.display = "none";
+};
+
+const update = (author: string, idReply: number) => {
+  const elContens = document.querySelectorAll(".content__text");
+  const elComments = document.querySelectorAll(".form__comment");
+  let _targetContent: HTMLElement;
+  let _targetComment: HTMLElement;
+  let content: string;
+
+  elContens.forEach((el) => {
+    if (parseInt((el as HTMLElement).dataset.id!) == idReply) {
+      _targetContent = el as HTMLElement;
+    }
+  });
+
+  elComments.forEach((el) => {
+    if (parseInt((el as HTMLElement).dataset.id!) == idReply) {
+      _targetComment = el as HTMLElement;
+    }
+  });
+
+  content = (_targetComment!.firstElementChild as HTMLInputElement).value;
+  commentStore.updateReply(author, idReply, content);
+
+  _targetComment!.classList.remove("show");
+  _targetComment!.classList.add("hide");
+  _targetContent!.style.display = "block";
 };
 
 const showModalConfirm = (author: string, idReply: number) => {
@@ -128,7 +177,7 @@ const deleteReply = (author: string, idReply: number) => {
         </AppButton>
         <AppButton
           :text="true"
-          @submit="editReply(item.user.username, item.id)"
+          @submit="editReply(item.id, `@${item.replyingTo} ${item.content}`)"
         >
           <font-awesome-icon icon="fa-solid fa-pen" style="margin-right: 3px" />
           Edit
@@ -136,12 +185,19 @@ const deleteReply = (author: string, idReply: number) => {
       </div>
     </div>
     <div class="content">
-      <p>
+      <p class="content__text" :data-id="item.id">
         <span class="replying__to" v-if="item.replyingTo"
           >@{{ item.replyingTo }}</span
         >
         {{ item.content }}
       </p>
+      <AppFormComment
+        class="hide"
+        :data-id="item.id"
+        button-name="UPDATE"
+        :value="valueToUpdateContent"
+        @submit="update(author!, item.id)"
+      />
     </div>
   </div>
 
@@ -234,5 +290,13 @@ const deleteReply = (author: string, idReply: number) => {
   padding: 5px 0;
   font-size: 0.8em;
   color: var(--color-neutral-grayish-blue);
+}
+
+.show {
+  display: flex !important;
+}
+
+.hide {
+  display: none;
 }
 </style>
