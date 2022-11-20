@@ -5,7 +5,7 @@ import { useUserStore } from "./stores/user";
 import { useCommentStore } from "./stores/comment";
 
 import AppUserComment from "./components/UserComment.vue";
-import AppCommentDesktopView from "./components/CommentDesktopView.vue";
+import AppComment from "./components/Comment.vue";
 
 const userStore = useUserStore();
 const commentStore = useCommentStore();
@@ -38,10 +38,10 @@ const addComment = () => {
 <template>
   <main class="container">
     <div v-for="(item, index) in data" :key="index" style="width: 100%">
-      <AppCommentDesktopView :item="item" :author="item.user.username" />
+      <AppComment :item="item" :author="item.user.username" />
       <div class="replies" v-if="item.replies.length">
         <div v-for="reply in item.replies">
-          <AppCommentDesktopView :item="reply" :author="item.user.username" />
+          <AppComment :item="reply" :author="item.user.username" />
         </div>
       </div>
     </div>
@@ -78,5 +78,16 @@ const addComment = () => {
   justify-content: center;
   align-items: center;
   padding: 50px 0;
+}
+
+@media only screen and (max-width: 400px) {
+  .container {
+    padding: 15px;
+  }
+
+  .replies {
+    padding: 0 0 0 15px;
+    margin: 15px 0 0;
+  }
 }
 </style>

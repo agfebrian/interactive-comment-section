@@ -182,6 +182,7 @@ const deleteReply = (author: string, idReply: number) => {
 
       <AppButton
         :text="true"
+        class="button__medium_screen"
         @submit="replyTo(item.id)"
         v-if="item.user.username != currentUser.username"
       >
@@ -191,6 +192,7 @@ const deleteReply = (author: string, idReply: number) => {
       <div v-else style="margin-left: auto">
         <AppButton
           :text="true"
+          class="button__medium_screen"
           color="hsl(358, 75%, 66%)"
           style="margin-right: 15px"
           @submit="showModalConfirm(author!, item.id)"
@@ -203,6 +205,7 @@ const deleteReply = (author: string, idReply: number) => {
         </AppButton>
         <AppButton
           :text="true"
+          class="button__medium_screen"
           @submit="editReply(item.id, `@${item.replyingTo} ${item.content}`)"
         >
           <font-awesome-icon icon="fa-solid fa-pen" style="margin-right: 3px" />
@@ -211,12 +214,56 @@ const deleteReply = (author: string, idReply: number) => {
       </div>
     </div>
     <div class="content">
-      <p class="content__text" :data-id="item.id">
-        <span class="replying__to" v-if="item.replyingTo"
-          >@{{ item.replyingTo }}</span
-        >
-        {{ item.content }}
-      </p>
+      <div class="content__text" :data-id="item.id">
+        <p>
+          <span class="replying__to" v-if="item.replyingTo"
+            >@{{ item.replyingTo }}</span
+          >
+          {{ item.content }}
+        </p>
+
+        <div class="footer">
+          <AppCounter :count="item.score" />
+
+          <AppButton
+            :text="true"
+            @submit="replyTo(item.id)"
+            v-if="item.user.username != currentUser.username"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-reply"
+              style="margin-right: 3px"
+            />
+            Reply
+          </AppButton>
+          <div v-else style="margin-left: auto">
+            <AppButton
+              :text="true"
+              color="hsl(358, 75%, 66%)"
+              style="margin-right: 15px"
+              @submit="showModalConfirm(author!, item.id)"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-trash"
+                style="margin-right: 3px"
+              />
+              Delete
+            </AppButton>
+            <AppButton
+              :text="true"
+              @submit="
+                editReply(item.id, `@${item.replyingTo} ${item.content}`)
+              "
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-pen"
+                style="margin-right: 3px"
+              />
+              Edit
+            </AppButton>
+          </div>
+        </div>
+      </div>
       <AppFormComment
         class="hide"
         :data-id="item.id"
@@ -294,6 +341,13 @@ const deleteReply = (author: string, idReply: number) => {
   grid-row-end: 4;
 }
 
+.content .footer {
+  margin-top: 15px;
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .replying__to {
   color: var(--color-primary-blue);
 }
@@ -304,5 +358,34 @@ const deleteReply = (author: string, idReply: number) => {
 
 .hide {
   display: none;
+}
+
+@media only screen and (max-width: 400px) {
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+  }
+
+  .content .content__text p {
+    line-height: 23px;
+  }
+
+  .content .footer {
+    display: flex;
+  }
+
+  .button__medium_screen {
+    display: none;
+  }
 }
 </style>

@@ -51,7 +51,18 @@ const decrement = () => {
 .min {
   padding: 5px 0;
   font-size: 0.8em;
+  font-weight: 900;
   cursor: pointer;
   color: var(--color-neutral-grayish-blue);
+}
+
+@media only screen and (max-width: 400px) {
+  .counter {
+    height: 40px;
+    width: 100px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
 }
 </style>

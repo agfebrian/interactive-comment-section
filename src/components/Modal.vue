@@ -101,4 +101,10 @@ const props = defineProps({
   display: flex;
   gap: 15px;
 }
+
+@media only screen and (max-width: 400px) {
+  .box {
+    width: 85%;
+  }
+}
 </style>

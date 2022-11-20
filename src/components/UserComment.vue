@@ -59,4 +59,10 @@ const handleSubmit = () => {
   height: 45px;
   border-radius: 50%;
 }
+
+@media screen and (max-width: 400px) {
+  .comment > img {
+    display: none;
+  }
+}
 </style>

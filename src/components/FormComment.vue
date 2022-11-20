@@ -8,12 +8,14 @@
       ref="textarea"
       :placeholder="placeholder"
     ></textarea>
+    <img :src="currentUser.image?.png" :alt="currentUser.username" />
     <ButtonApp @submit="handleSubmit">{{ buttonName }}</ButtonApp>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref, watch } from "vue";
+import { defineEmits, defineProps, ref, watch, computed } from "vue";
+import { useUserStore } from "../stores/user";
 
 import ButtonApp from "./Button.vue";
 
@@ -34,6 +36,10 @@ const props = defineProps({
     default: "BUTTON",
   },
 });
+
+const userStore = useUserStore();
+
+const currentUser = computed(() => userStore.getCurrentUser);
 
 const textarea = ref<HTMLInputElement | null>(null);
 
@@ -57,6 +63,14 @@ const handleSubmit = () => {
   gap: 10px;
 }
 
+img {
+  width: 48px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: auto;
+  display: none;
+}
+
 textarea {
   width: 90%;
   resize: none;
@@ -64,5 +78,21 @@ textarea {
   padding: 10px 20px;
   outline-color: var(--color-neutral-dark-blue);
   border: 1px solid var(--color-neutral-dark-blue);
+}
+
+@media screen and (max-width: 400px) {
+  .form__comment {
+    flex-wrap: wrap;
+    justify-content: end;
+    align-items: center;
+  }
+
+  img {
+    display: inline-block;
+  }
+
+  textarea {
+    width: 100%;
+  }
 }
 </style>
