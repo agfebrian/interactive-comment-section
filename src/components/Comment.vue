@@ -178,6 +178,9 @@ const deleteReply = (author: string, idReply: number) => {
     <div class="header">
       <img :src="item.user.image.png" alt="user" />
       <p class="title">{{ item.user.username }}</p>
+      <span class="badge" v-if="item.user.username == currentUser.username"
+        >you</span
+      >
       <p class="date">{{ item.createdAt }}</p>
 
       <AppButton
@@ -325,9 +328,20 @@ const deleteReply = (author: string, idReply: number) => {
   margin-left: 10px;
 }
 
+.header > .badge {
+  font-size: 0.8em;
+  font-weight: 500;
+  margin-left: 7px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  color: var(--color-neutral-white);
+  background-color: var(--color-primary-blue);
+}
+
 .header > .date {
   font-weight: 400;
   margin-left: 10px;
+  color: var(--color-neutral-grayish-blue);
 }
 
 .header > button {
@@ -339,6 +353,11 @@ const deleteReply = (author: string, idReply: number) => {
   grid-column-end: 13;
   grid-row-start: 2;
   grid-row-end: 4;
+}
+
+.content .content__text p {
+  line-height: 23px;
+  color: var(--color-neutral-grayish-blue);
 }
 
 .content .footer {
@@ -374,10 +393,6 @@ const deleteReply = (author: string, idReply: number) => {
   .header {
     display: flex;
     align-items: center;
-  }
-
-  .content .content__text p {
-    line-height: 23px;
   }
 
   .content .footer {
