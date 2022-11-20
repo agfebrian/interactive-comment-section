@@ -25,3 +25,7 @@
 body {
   background-color: var(--color-neutral-very-light-gray);
 }
+
+body p {
+  color: var(--color-neutral-dark-blue);
+}
