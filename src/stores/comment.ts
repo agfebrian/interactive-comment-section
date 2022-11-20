@@ -30,7 +30,7 @@ export const useCommentStore = defineStore("comment", () => {
 
     if (reply.length) {
       reply.forEach((item) => {
-        item.content = content;
+        item.content = content.split(" ").slice(1, content.length).join(" ");
       });
     } else {
       comment.map((item) => (item.content = content));
