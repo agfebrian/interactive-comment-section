@@ -223,7 +223,7 @@ const deleteReply = (author: string, idReply: number) => {
         </p>
 
         <div class="footer">
-          <AppCounter :count="item.score" />
+          <AppCounter :count="item.score" :id-reply="item.id" />
 
           <AppButton
             :text="true"
